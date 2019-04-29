@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search</title>
+
+    <style>
+    *{font:12px; }
+
+table{width:100%;border:1px solid #999;}
+table td{word-break: keep-all;white-space:nowrap;}
+
+  </style>
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+		  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+        
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+<link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+  <script src="/static/bootstrap/js/jquery-1.11.3.min.js"></script>
+
+  <!-- Include all compiled plugins (below), or include individual files as needed --> 
+  <script src="/static/bootstrap/js/bootstrap.js"></script>
+  <script src="/static/layermobile/layer.js"></script> 
+
+</head>
+<body>
+  <div class="container">
+  <div class="row">
+    <div class="span12">
+      <ul class="nav nav-tabs">
+        <li >
+          <a href="/">首页</a>
+        </li>
+        <li>
+          <a href="/admin/index/order">订单</a>
+        </li>
+
+         <li>
+          <a href="/admin/index/search">搜索</a>
+        </li>
+        <li>
+          <a href="/admin">管理</a>
+        </li>
+        
+
+        <li class="dropdown pull-right">
+           <a href="#" data-toggle="dropdown" class="dropdown-toggle">下拉<strong class="caret"></strong></a>
+          <ul class="dropdown-menu">
+            <li>
+              <a href="#">操作</a>
+            </li>
+            <li>
+              <a href="#">设置栏目</a>
+            </li>
+            <li>
+              <a href="#">更多设置</a>
+            </li>
+            <li class="divider">
+            </li>
+            <li>
+              <a href="#">分割线</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="container">
+  
+<div class="row">
+		<div class="span12">
+			<h3>搜索</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<form class="form-search" method="get">
+				<input name="keyword" class="input-medium search-query" type="text" /> <button type="submit" class="btn">查找</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+<div class="row">
+		<div class="span12">
+			<h3>结果</h3>
+		</div>
+	</div>
+
+	<?php  if(isset($ssuser)){    ?>
+<div class="row">
+  <div class="col-lg-12" style="max-width: 800px">
+ 
+  
+<ol>
+
+{foreach $ssuser as $K=>$v}
+
+<li>
+
+<div class="panel  <?php if($v['status']==0||$v['addtime']<strtotime("now")){ echo "alert-danger"; }    ?> ">
+    <div class="panel-body"> 用户名：{$v.email}<br>
+  服务器: {$v.node}  <br>
+  端口号：{$v.port}   <br>
+
+  备注：{$v.content} 
+
+<?php if($v['addtime']<strtotime('now')){echo '已过期';}else{echo '还剩'. round((($v['addtime'])-strtotime('now'))/86400,2) . '天'; }?>
+   <br>
+   <button  class="bandwith btn  btn-primary" <?php if($v['port']==0) { echo "disabled='disabled'";}   ?>  port="<?php if($v['port']!='') { echo $v['port'];}   ?>" ip="{$v.node}" >流量</button>   <a class="btn btn-default" target="view_window" href="/admin/index/user/id/{$v.id}">详情</a>
+  
+  
+   
+    
+     
+       </div>
+
+</div>
+
+</li>
+  {/foreach}
+
+</ol>
+
+
+
+
+  
+  </div>
+</div>
+
+
+<?php  }  ?>
+</div>
+
+
+<script>
+
+
+//bandwith  查询用户流量使用情况
+
+$('.bandwith').on('click', function(){
+    
+var port=$(this).attr("port");
+var ip=$(this).attr("ip");
+
+//alert(port);
+    $.post("/admin/api/bandwith",{ip:ip,port:port},function(result){
+   
+        //alert(result);
+
+        //layer.alert(result); 
+          layer.open({
+          content: result
+          ,btn: '我知道了'
+        });    
+
+
+
+
+
+     });     
+  });
+
+
+
+
+
+
+
+</script>
+
+
+
+</body>
+</html>

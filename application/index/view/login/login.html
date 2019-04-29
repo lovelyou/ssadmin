@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+	<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/static/pintuer/pintuer.css">
+	<script src="/static/pintuer/jquery.js"></script>
+	<script src="/static/pintuer/pintuer.js"></script>
+	<script src="/static/pintuer/respond.js"></script>
+		  <link href="/static/sweetalert/css/app.css" rel="stylesheet">
+  <script src="/static/sweetalert/sweetalert/sweetalert.min.js"></script>
+	<style>
+.container {
+	max-width: 960px;
+}
+.nav li {
+	float: left
+}
+</style>
+	<title>登录</title>
+	</head>
+
+	<body>
+<div class="container-layout bg-yellow">
+      <div class="container">
+    <div class="bg-yellow bg-inverse radius " id="nav-bg8">
+          <ul class="nav nav-inline nav-menu nav-pills clearfix">
+       <li><a href="/">首页</a></li>
+        <li><a href="">流量卡</a></li>
+      
+        <li><a href="/apply">注册</a></li>
+		<li><a href="/login">登录</a></li>
+      </ul>
+        </div>
+  </div>
+    </div>
+    
+    
+    <br>
+<div class="container">
+      <div class="line-small">
+    <div class="xm8 xs12">
+		  
+	
+		  
+		  	  <div class="panel">
+	<div class="panel-body">
+		
+				 <div class="form-auto">
+	<div class="form-group">
+		<div class="field field-icon">
+			<input type="text" class="input" id="username" name="username" size="30" placeholder="邮箱/账号" />
+			
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="field field-icon">
+			<input type="password" class="input" id="password" name="password" size="30" placeholder="请输入密码" />
+			
+		</div>
+	</div>
+	<div class="form-button">
+		<button id="submit" class="button bg-red" >
+			登录</button>  
+
+
+			 <a  class="button" href="/index/reset">忘记密码</a>
+	</div>
+</div>
+				 
+				  
+				  </div>
+</div>	  
+		  
+		  
+	</div>
+    <div class="xm4 xs12">
+		  
+		  
+		  
+		  
+		  
+		  
+		  </div>
+  </div>
+    </div>
+    
+    
+    
+    
+    
+    <br>
+    
+    
+    
+    <script>
+$('#submit').on('click', function(){
+    
+  var username=$('#username').val();
+  var password=$('#password').val();
+
+//alert(port);
+    $.post("/login/check",{username:username,password:password},function(result){
+   
+       
+        if (result.msg=='success') {
+
+            window.location.reload();
+
+        }else{
+
+        
+          swal ( "错误提示" ,  result.msg ,  "error" );
+
+        }
+        //alert(username+password);     
+
+
+
+
+
+     },'json');     
+  });
+
+
+
+</script>
+
+    
+    
+</body>
+</html>

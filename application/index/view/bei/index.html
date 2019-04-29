@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+
+<meta charset="utf-8">
+	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/static/pintuer/pintuer.css">
+	<script src="/static/pintuer/jquery.js"></script>
+	<script src="/static/pintuer/pintuer.js"></script>
+	<script src="/static/pintuer/respond.js"></script>
+
+	<style>
+.container {
+	max-width: 960px;
+}
+.nav li {
+	float: left
+}
+</style>
+
+	<title>备用账号</title>
+</head>
+<body>
+
+	<div class="container-layout bg-yellow">
+      <div class="container">
+    <div class="bg-yellow bg-inverse radius " id="nav-bg8">
+          <ul class="nav nav-inline nav-menu nav-pills clearfix">
+       <li><a href="/">首页</a></li>
+        <li><a href="#">备用</a></li>
+      <li><a href="http://study.shenbi.me/">教程</a></li>
+      </ul>
+        </div>
+  </div>
+    </div>
+
+<br>
+ <div class="container">
+
+ 	<div class="line">
+ 		免费提供给付费用户的备用账号，您可以使用的备用账号：
+ 		<br>	
+
+ {foreach $order as $K=>$v}
+
+
+<?php   
+
+
+if($addtime>$v['etime']){
+	
+echo '服务器：'. $v['node'];
+
+echo '<br>';
+
+echo '端口：'.$v['port'];
+echo '<br>';
+echo '密码：'. $v['pass'];
+
+echo '<br>';
+
+echo '加密：aes-256-cfb';
+
+echo '<br>';
+
+echo '到期时间：';
+
+
+
+ echo date("Y年m月d日",$v['etime']);
+
+echo " <hr>";
+
+}
+
+
+ ?>
+
+
+
+{/foreach}
+
+
+</div>
+
+</div>
+
+</body>
+</html>

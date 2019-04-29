@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>开通账号</title>
+<link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
+  <script src="/static/bootstrap/js/jquery-1.11.3.min.js"></script>
+
+  <!-- Include all compiled plugins (below), or include individual files as needed --> 
+  <script src="/static/bootstrap/js/bootstrap.js"></script>
+  <script src="/static/layermobile/layer.js"></script> 
+  </head>
+  <body>
+      <div class="container">
+  <div class="row">
+    <div class="span12">
+      <ul class="nav nav-tabs">
+        <li >
+          <a href="/">首页</a>
+        </li>
+        <li>
+          <a href="/admin/index/order">订单</a>
+        </li>
+
+         <li>
+          <a href="/admin/index/search">搜索</a>
+        </li>
+        <li>
+          <a href="/admin">管理</a>
+        </li>
+        
+
+        <li class="dropdown pull-right">
+          
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+    <div class="container">
+  
+    <div class="row">
+      
+      <div class="col-lg-12">
+      <br> 
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">详情信息</h3>
+          </div>
+          <div class="panel-body">
+          <p>用户名：{$ssuser.email}</p>
+          <p> 备注：{$ssuser.content}  </p>
+         
+          <p>有效：<span style="color: red"> <?php  echo round((($ssuser['addtime'])-strtotime('now'))/86400,2);   ?></span> 天 ,<?php echo date("Y年m月d日",$ssuser['addtime']); ?>到期</p>
+           <p> 联系：{$ssuser.contact}</p>
+            
+          </div>
+          <div class="panel-footer"><button class="delport btn btn-primary" act="close"  port="{$ssuser.port}" ip="{$ssuser.node}" userid="{$ssuser.id}"  oid="">关闭</button> <button class="kaitong btn btn-primary">新增</button>
+
+<button class="email btn btn-primary" email="{$ssuser.email}" contents="服务器：{$ssuser.node}  端口号：{$ssuser.port}  加密：aes-256-cfb,密码：{$ssuser.sspass} 有效期：<?php echo date("Y年m月d日",$ssuser['addtime']); ?> ">邮件</button>
+
+          </div>
+        </div>
+      </div>
+  <div class="col-lg-12">
+
+
+
+ {foreach $order as $K=>$v}
+
+<div class="panel">
+  
+
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title  panel-success">订单</h3>
+  </div>
+  <div class="panel-body">
+   服务器：{$v.node}<br>
+   端口：{$v.port}(服务器或者远程)<br>
+   密码：{$v.pass}<br>
+   加密：aes-256-cfb<br>
+   有效期：<?php echo date("Y/m/d",$v['utime']);   ?>--到--><?php echo date("Y/m/d",$v['etime']);   ?><br>
+   状态：<?php if($v['status']==1){
+  
+  echo "OK";
+
+}else{
+  
+  echo "off";
+}
+        ?>  <br>
+
+        价格：{$v.price}￥ <br>
+
+        <p style="color: red">不能使用时，登录网址：www.shenbi.me，自行更换IP, 工作时间：早9点到晚10点（其它时间请勿打扰）</p>
+
+         <button class="delport  btn btn-primary" act="close"  port="{$v.port}" ip="{$v.node}" userid="{$v.uid}"  oid="{$v.id}">关闭</button>   <button class="delport  btn btn-primary" act="del" port="{$v.port}" ip="{$v.node}" userid="{$v.uid}"  oid="{$v.id}">删除</button>
+  </div>
+
+
+
+ 
+<div class="panel-footer">
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+
+
+
+</div>
+
+
+
+  {/foreach}
+     
+      </div>
+
+
+<div class="col-lg-12"> 
+
+
+
+
+</div>
+
+
+
+    </div>
+  </div>
+
+
+
+<textarea id="html" style="display:none;">
+ <div class="container">
+ <div class="row">
+          <div class="col-xs-12">
+        <form action="/admin/api/addss" method="post">
+        <div>
+        <input name="id" placeholder="用户id" type="hidden" id="id" value="{$ssuser.id}">
+<br>
+        <div class="input-group"><span class="input-group-addon">IP</span>
+             <select name="node" class="form-control" >
+       
+         <option value="{$ssuser.node}" selected>{$ssuser.node}</option>
+ {foreach $server as $K=>$s}
+                  <option value="{$s.ip}" >{$s.local}{$s.ip}-----><?php echo   $co=db('ssuser')->where('node',$s['ip'])->where('status',1)->where('addtime','>',strtotime('now'))->count();
+
+            ?></option>
+{/foreach}        
+       </select>
+          </div>
+            <br>
+         
+          <div class="input-group"><span class="input-group-addon">端口</span>
+            <input type="text" name="port" class="form-control" value="<?php if($ssuser['port']!=0){echo $ssuser['port']; }else{ echo $setport; }  ?>" placeholder="placeholder content">
+          </div>
+            <br>
+             <div class="input-group"><span class="input-group-addon">密码</span>
+            <input type="text" name="sspass" class="form-control" value="{$ssuser.sspass}" placeholder="placeholder content">
+            </div>
+            <br>
+             <div class="input-group"><span class="input-group-addon">价格</span>
+            <input type="text" name="price" class="form-control" value="15" placeholder="placeholder content">
+            </div>
+              <br>
+             <div class="input-group"><span class="input-group-addon">时间</span>
+            <input type="text"  name="addtime" class="form-control addtime" value="30" placeholder="天">
+            </div>
+              <br>
+
+
+              <div class="input-group"><span class="input-group-addon">备注</span>
+            <input type="text" name="content" class="form-control" value="未支付" placeholder="placeholder content">
+            </div>
+
+             <br>
+           <div class="input-group">
+          <button id="addport" type="submit" class="btn btn-primary">确定</button> - <a href="javascript:;"  class="btn btn-primary" onclick="layer.closeAll(); layer.open({content:'世界恢复原样 →_→', time:2});  ">关闭</a>
+
+        </div>
+         </div>
+        </div>
+
+
+        </form>
+        </div>
+        </div>
+</textarea>
+
+  <script type="text/javascript">
+//邮件发送
+
+$('.email').on('click', function(){
+var mailto=$(this).attr("email");
+var contents=$(this).attr('contents');
+//var textareaid='#html'+id;
+var title="您的上网账号信息";
+var content="以下是您的账号信息："+contents+"不能使用时，登录网址：www.shenbi.me，自行更换IP";
+ $.post('/admin/api/ssendmail',{mail:mailto,subject:title,body:content},function(data){
+
+if (data.msg=="success") {
+
+ layer.open({
+          content: '邮件发送成功'
+          ,btn: '我知道了'
+        });
+
+}
+
+
+ },'json');
+
+
+
+
+
+
+  });
+
+//账号开通
+$('.kaitong').on('click', function(){
+var id=$(this).attr("id");
+var textareaid='#html';
+var html=$(textareaid).val();
+var pageii = layer.open({
+  type: 1
+  ,content: html
+  ,anim: 'up'
+  ,style: 'position:fixed; left:0; top:0; width:100%; height:100%; border: none; -webkit-animation-duration: .5s; animation-duration: .5s;'
+});
+
+
+
+
+
+
+  });
+//删除端口账号信息
+//
+//
+//
+//
+$('.delport').on('click', function(){
+var act=$(this).attr("act");
+var id=$(this).attr("userid"); 
+var port=$(this).attr("port");
+var ip=$(this).attr("ip");
+var oid=$(this).attr("oid");
+
+
+layer.open({
+  title: [
+    '确认删除',
+    'background-color:#8DCE16; color:#fff;'
+  ]
+  ,anim: 'up'
+  ,content: '您确定删除本端口么'
+  ,btn: ['确认', '取消']
+  ,yes: function(index){  
+          $.post("/admin/api/delss",{id:id,port:port,ip:ip,oid:oid,act:act},function(result){
+   
+        //alert(result);
+
+        //layer.alert(result.msg);     
+                 layer.open({
+          content: result.msg
+          ,btn: '我知道了'
+        });
+
+
+
+
+     },'json');  
+  layer.close(index)
+}
+
+});
+
+
+
+
+
+   
+  });
+  </script>
+
+  </body>
+</html>

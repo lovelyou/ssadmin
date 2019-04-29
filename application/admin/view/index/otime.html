@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0"> 
+<meta name="apple-mobile-web-app-status-bar-style" content="black"> 
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+
+    <title>按时间页面</title>
+    <!-- Bootstrap -->
+	
+    <style>
+    *{font:12px; }
+
+table{width:100%;border:1px solid #999;}
+table td{word-break: keep-all;white-space:nowrap;}
+
+
+  </style>
+<link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+  <script src="/static/bootstrap/js/jquery-1.11.3.min.js"></script>
+
+  <!-- Include all compiled plugins (below), or include individual files as needed --> 
+  <script src="/static/bootstrap/js/bootstrap.js"></script>
+  <script src="/static/layermobile/layer.js"></script> 
+
+
+
+  </head>
+  <body>
+  
+ <div class="container">
+  <div class="row">
+    <div class="span12">
+      <ul class="nav nav-tabs">
+        <li >
+          <a href="/">首页</a>
+        </li>
+        <li>
+          <a href="/admin/index/order">订单</a>
+        </li>
+
+         <li>
+          <a href="/admin/index/search">搜索</a>
+        </li>
+        <li>
+          <a href="/admin">管理</a>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<div class="container">
+
+
+<div class="row">
+    <div class="col-lg-12">
+      {$order->render()}
+
+    </div>
+  </div>
+
+
+  <?php  if(isset($order)){    ?>
+<div class="row">
+  <div class="col-lg-12">
+  <table class="table table-bordered" width="100%" border="1">
+  <tbody>
+    <tr>
+      <td>用户名</td> 
+      <td>详情</td>
+      <td>备注</td>
+     
+    </tr>
+
+    {foreach $order as $K=>$v}
+
+
+    <tr >
+      <td><span class="badge">  <?php echo $odercont=db('order')->where('uid',$v['uid'])->count(); ?> </span><a href="/admin/index/user/id/{$v.uid}"><?php     $co=db('ssuser')->where('id',$v['uid'])->select(); echo $co['0']['email'];     ?> </a>     </td>
+    
+    
+      <td> <?php if($v['etime']<strtotime('now')){echo "<span class='badge' style='color: red'>过期 ".round((strtotime('now')-($v['etime']))/86400,2);}else{echo "<span class='badge' style='color:#00f53f'>还剩". round((($v['etime'])-strtotime('now'))/86400,2) . '天'; }?>  </span>  {$v.node}:{$v.port}      </td>
+       <td> <span  class="email"  email="<?php     $co=db('ssuser')->where('id',$v['uid'])->select(); echo $co['0']['email'];     ?>" contents="服务器：{$v.node} 端口号：{$v.port}，到期时间：<?php echo date("Y年m月d日",$v['etime']);      ?>" > 邮件</span> <span class="bandwith" port="{$v.port}" ip="{$v.node}"> 流量</span> <span class="delport" act="del" port="{$v.port}" ip="{$v.node}" userid="{$v.uid}"  oid="{$v.id}">删除</span>  </td>
+
+    
+    </tr>
+   {/foreach}
+
+  </tbody>
+</table>
+  
+  
+  
+  </div>
+</div>
+
+
+<?php  }  ?>
+</div>
+
+
+
+<script>
+
+//邮件发送
+
+$('.email').on('click', function(){
+var mailto=$(this).attr("email");
+var contents=$(this).attr('contents');
+//var textareaid='#html'+id;
+var title="您的上网账号到期信息";
+var content="您的订单："+contents+"查看账号信息和不能上网的时候，可到网址 www.shenbi.me 登录后获取备用账号，  如需要继续使用，请续费。";
+ $.post('/admin/api/ssendmail',{mail:mailto,subject:title,body:content},function(data){
+
+
+if (data.msg=="success") {
+
+ layer.open({
+          content: '邮件发送成功'
+          ,btn: '我知道了'
+        });
+
+}
+
+
+ },'json');
+
+
+
+
+
+
+  });
+
+
+
+
+
+
+//删除端口账号信息
+//
+//
+//
+//
+$('.delport').on('click', function(){
+var act=$(this).attr("act");
+var id=$(this).attr("userid"); 
+var port=$(this).attr("port");
+var ip=$(this).attr("ip");
+var oid=$(this).attr("oid");
+
+
+layer.open({
+  title: [
+    '确认删除',
+    'background-color:#8DCE16; color:#fff;'
+  ]
+  ,anim: 'up'
+  ,content: '您确定删除本端口么'
+  ,btn: ['确认', '取消']
+  ,yes: function(index){  
+          $.post("/admin/api/delss",{id:id,port:port,ip:ip,oid:oid,act:act},function(result){
+   
+        //alert(result);
+
+        //layer.alert(result.msg);     
+                 layer.open({
+          content: result.msg
+          ,btn: '我知道了'
+        });
+
+
+
+
+     },'json');  
+  layer.close(index)
+}
+
+});
+
+
+
+
+
+   
+  });
+
+
+
+//bandwith  查询用户流量使用情况
+
+$('.bandwith').on('click', function(){
+    
+var port=$(this).attr("port");
+var ip=$(this).attr("ip");
+
+//alert(port);
+    $.post("/admin/api/bandwith",{ip:ip,port:port},function(result){
+   
+        //alert(result);
+
+        //layer.alert(result); 
+          layer.open({
+          content: result
+          ,btn: '我知道了'
+        });    
+
+
+
+
+
+     });     
+  });
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+  </body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0"> 
+<meta name="apple-mobile-web-app-status-bar-style" content="black"> 
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+
+    <title>管理页面</title>
+    <!-- Bootstrap -->
+	
+    <style>
+    *{font:12px; }
+
+table{width:100%;border:1px solid #999;}
+table td{word-break: keep-all;white-space:nowrap;}
+
+
+  </style>
+<link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+  <script src="/static/bootstrap/js/jquery-1.11.3.min.js"></script>
+
+  <!-- Include all compiled plugins (below), or include individual files as needed --> 
+  <script src="/static/bootstrap/js/bootstrap.js"></script>
+  <script src="/static/layermobile/layer.js"></script> 
+
+
+
+  </head>
+  <body>
+  <div class="container">
+  <div class="row">
+    <div class="span12">
+      <ul class="nav nav-tabs">
+        <li >
+          <a href="/">首页</a>
+        </li>
+       
+         <li>
+          <a href="/admin/index/search">搜索</a>
+        </li>
+       
+       
+        <li>
+          <a href="/admin/index/otime">到期</a>
+        </li>
+
+        <li>
+          <a href="/admin">管理</a>
+        </li> 
+       
+
+        <li class="dropdown pull-right">
+           <a href="#" data-toggle="dropdown" class="dropdown-toggle">下拉<strong class="caret"></strong></a>
+          <ul class="dropdown-menu">
+        
+ <li>
+          <a href="/admin/index/order">订单</a>
+        </li>
+
+        <li>
+          <a href="/admin/index/log">日志</a>
+        </li> 
+ <li>
+          <a href="/admin/index/server">服务器</a>
+        </li>
+         
+          </ul>
+        </li>
+
+
+
+
+      </ul>
+    </div>
+  </div>
+</div>
+  <div class="container">
+  
+  <br>
+ 
+ <div class="row">
+      <div class="col-xs-12">
+      
+       
+   <div>
+         
+          <div class="input-group"><span class="input-group-addon">IP地址：</span>
+            <input type="text" id="ip"  class="form-control ipadd" placeholder="">
+          </div>
+            <br>
+              <div class="input-group"><span class="input-group-addon">别名：</span>
+            <input type="text" id="dname" class="form-control" placeholder="">
+            </div>
+            <br>
+           <div class="input-group"><span class="input-group-addon">区域：</span>
+            <input type="text" id="local"  class="form-control" placeholder="">
+          </div>
+            
+            <br>
+           <div class="input-group">
+          <button type="button" id="serveradd" class="btn btn-primary">增加</button>
+        </div>
+         
+        </div>
+
+      </div>
+    </div>
+
+    <br>  
+    {foreach $server as $K=>$v}
+ <div class="row">
+
+
+  
+      <div class="col-xs-12">
+      
+ 
+<div class="input-group">
+              <span >
+            {$v.local}:{$v.ip}:{$v.dname} <?php echo   $co=db('ssuser')->where('node',$v['ip'])->where('status',1)->where('addtime','>',strtotime('now'))->count();
+
+            ?>
+              </span>
+            </div>
+      </div>
+
+    </div>
+<br>
+
+{/foreach}
+
+
+  </div>
+
+
+
+
+
+
+
+
+<script>
+
+//增加结点
+
+$('#serveradd').on('click', function(){
+  var ip=$('#ip').val();
+  var local=$('#local').val();
+  var dname=$('#dname').val();
+  var t=false;
+  if (ip=="") {
+      t=false;
+      layer.open({
+          content: 'IP地址不能为空'
+          ,btn: '我知道了'
+        });
+
+  }
+ else if (dname=="") {
+      t=false;
+      layer.open({
+          content: '别名不能为空'
+          ,btn: '我知道了'
+        });
+
+  }
+
+  else if (local=="") {
+      t=false;
+      layer.open({
+          content: '区域不能空'
+          ,btn: '我知道了'
+        });
+    }else{
+
+      t=true;
+
+    }
+
+
+
+if (t) {
+var serip=$('#serveraddinput').val();
+    $.post("/admin/api/addserver",{ip:ip,local:local,dname:dname},function(result){  
+         layer.open({
+          content: result.msg
+          ,btn: '我知道了'
+        });
+     },'json');  
+}
+
+    
+  
+  });
+
+
+
+
+
+//bandwith  查询用户流量使用情况
+
+$('.bandwith').on('click', function(){
+    
+var port=$(this).attr("port");
+var ip=$(this).attr("ip");
+
+//alert(port);
+    $.post("/admin/api/bandwith",{ip:ip,port:port},function(result){
+   
+        //alert(result);
+
+        //layer.alert(result); 
+          layer.open({
+          content: result
+          ,btn: '我知道了'
+        });    
+
+
+
+
+
+     });     
+  });
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+  </body>
+</html>

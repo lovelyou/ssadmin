@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+
+<meta charset="utf-8">
+	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/static/pintuer/pintuer.css">
+	<script src="/static/pintuer/jquery.js"></script>
+	<script src="/static/pintuer/pintuer.js"></script>
+	<script src="/static/pintuer/respond.js"></script>
+ <link href="/static/sweetalert/css/app.css" rel="stylesheet">
+  <script src="/static/sweetalert/sweetalert/sweetalert.min.js"></script>
+
+	<style>
+.container {
+	max-width: 960px;
+}
+.nav li {
+	float: left
+}
+</style>
+
+	<title>更变服务器</title>
+</head>
+<body>
+
+	<div class="container-layout bg-green">
+      <div class="container">
+    <div class="bg-green bg-inverse radius " id="nav-bg8">
+          <ul class="nav nav-inline nav-menu nav-pills clearfix">
+       <li><a href="/">首页</a></li>
+    
+      <li><a href="http://study.shenbi.me/">教程</a></li>
+       <li><a href="/index/user">用户中心</a></li>
+      </ul>
+        </div>
+  </div>
+    </div>
+
+<br>
+ <div class="container">
+  <div class="line">
+  	
+<h3 style="color: red">1、本功能是在现行服务器无法使用情况下操作！原IP立即失效！  <br> <br> <br> 
+
+2、更换完成后，请按提示修改手机，电脑端的服务器地址，方可正常使用。 <br> <br> <br> 
+
+3、改变IP后，一定要改手机，电脑上面的服务器配置！修好了要改配置！修好了要改配置！修好了要改配置！重要的问题说三遍！ <br> <br> <br>
+
+</h3>
+
+
+
+
+  </div>
+
+  	<div class="line">
+ 	
+
+
+
+                            <form onsubmit="return false;">
+
+                            	<input type="hidden" id="orderid" name="orderid"   value="{$order.id}">
+
+
+									<div class="form-group" >
+                                            <div class="label">
+                                                <label for="f_class">
+                                                   现有服务器：{$order.node}
+                                                </label>
+                                            </div>
+                                            <div class="field">
+                                                  <input type="hidden" class="input" id="oldip" name="oldip" maxlength="50" value="{$order.node}" placeholder="" readonly>
+                                            </div>
+                                        </div>
+
+
+										<div class="form-group" >
+                                            <div class="label">
+                                                <label for="f_class">
+                                                  到期时间：<?php echo date("Y年m月d日",$order['etime']);  ?>
+                                                </label>
+                                            </div>
+                                            <div class="field">
+                                                  <input type="hidden" class="input" id="etime" name="etime" maxlength="50" value="{$order.etime}" placeholder="" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" >
+                                            <div class="label">
+                                                <label for="f_class">
+                                                 端口：{$order.port}
+                                                </label>
+                                            </div>
+                                            <div class="field">
+                                                  <input type="hidden" class="input" id="port"  name="port" maxlength="50" value="{$order.port}" placeholder="" readonly>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group" >
+                                            <div class="label">
+                                                <label for="f_class">
+                                                密码：{$order.pass}
+                                                </label>
+                                            </div>
+                                            <div class="field">
+                                                  <input type="hidden" class="input" id="pass" name="pass" maxlength="50" value="{$order.pass}" placeholder="">
+                                            </div>
+                                        </div>
+
+									<div class="form-group" >
+                                            <div class="label">
+                                                <label for="f_class">
+                                                   更变服务器：
+                                                </label>
+                                            </div>
+                                            <div class="field">
+                                                <select class="input" id="newip" name="newip" data-validate="required:请选择,length#>=1:至少选择1项">
+
+                                                  
+                                                      <option  value="" >点这里选择IP
+
+
+
+                                                    </option>
+
+
+
+
+                                                	 {foreach $server as $K=>$v}
+
+                                                	 <?php 
+
+
+                                                	 $co=db('ssuser')->where('node',$v['ip'])->where('status',1)->where('addtime','>',strtotime('now'))->count();
+
+                                                	 if($co<20){    ?>
+
+
+                                                    <option  value="{$v.ip}" >  {$v.local}-{$v.price}￥-{$v.ip}-(<?php  echo $co; ?>) 
+
+
+
+                                                    </option>
+                                                   
+
+                                                    <?php    }    ?>
+
+                                                    {/foreach}
+
+
+                                                </select>
+                                            </div>
+                                        </div>
+
+<div class="form-group" id="f_1550745183505">
+                                            <button id="changeip" class="button bg-red">
+                                                确认
+                                            </button>
+                                        </div>
+
+
+                                    </form>
+
+
+
+
+
+</div>
+
+</div>
+
+
+<script type="text/javascript">
+	
+$('#changeip').on('click', function(){
+
+
+ var orderid=$('#orderid').val();
+ var oldip=$('#oldip').val();
+ var etime=$('#etime').val();
+ var pass=$('#pass').val();
+ var port=$('#port').val();
+ var newip=$('#newip').val();
+
+ $('#changeip').attr("disabled","disabled");
+
+
+ $.post('/index/change/changeip',{orderid:orderid,oldip:oldip,etime:etime,pass:pass,port:port,newip:newip},function(result){
+   
+       
+      
+        swal ( "操作结果" ,  result.msg,{
+  button: false, icon: result.status
+}  );   
+
+        $('#changeip').removeAttr("disabled");
+
+
+},'json');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+});
+
+
+
+
+
+
+</script>
+
+
+
+
+
+</body>
+</html>

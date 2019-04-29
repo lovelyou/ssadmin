@@ -1,0 +1,340 @@
+<!doctype html>
+<html>
+	<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/static/pintuer/pintuer.css">
+	<script src="/static/pintuer/jquery.js"></script>
+	<script src="/static/pintuer/pintuer.js"></script>
+	<script src="/static/pintuer/respond.js"></script>
+	  <link href="/static/sweetalert/css/app.css" rel="stylesheet">
+  <script src="/static/sweetalert/sweetalert/sweetalert.min.js"></script> 
+
+	<style>
+.container {
+	max-width: 960px;
+}
+.nav li {
+	float: left
+}
+</style>
+	<title>用户中心</title>
+	</head>
+
+	<body>
+<div class="container-layout  bg-green">
+      <div class="container">
+    <div class="bg-green bg-inverse radius " id="nav-bg8">
+          <ul class="nav nav-inline nav-menu nav-pills clearfix">
+        <li><a href="/">首页</a></li>
+        <li><a href="http://study.shenbi.me/">教程</a></li>
+		 <?php if(session('usertype')=='admin'){ ?>   <li> <a  href="/admin">后台</a></li> <?php } ?>
+      </ul>
+        </div>
+  </div>
+    </div>
+    
+    
+    <br>
+
+    
+    
+    
+    
+    
+    <br>
+    
+    
+
+
+
+    
+    
+    
+    <div class="container">
+    <div class="panel">
+	<div class="panel-body">
+		          <?php  if($ssuser['port']!=0) {  ?>
+            
+            <p class="text-red">账号服务期：<?php echo date("Y年m月d日",$ssuser['addtime']);if($ssuser['addtime']<strtotime('now')){echo '已过期，请联系续费';} ?></p>
+           
+
+
+            <?php }else{
+
+              
+           echo "请联系管理审核开通账号：<a href='https://www.ssr.ren/'>点这里联系管理</a>，请确保您填写的是正确联系方式<br>";
+           echo "您的联系方式为：".$ssuser['contact'];
+           
+
+
+            }
+
+            ?>
+		
+		
+		
+		</div>
+		
+		
+		
+</div>
+     
+ 
+     <br>
+    
+	
+ {foreach $order as $K=>$v}
+        
+ <div class="panel">
+	<div class="panel-body">
+
+          
+           服务器（server）：{$v.node}
+           <br>
+         端口(port):{$v.port}
+
+         <br>
+         密码(password):{$v.pass}
+
+         <br>
+         加密（method）：默认
+         <br>
+
+
+            开始时间:<?php echo date("Y年m月d日",$v['utime']);   ?>---->到期时间:<?php echo date("Y年m月d日",$v['etime']);   ?>
+            <br>
+         
+
+           
+
+            <?php  if(strtotime("now")<$v['etime']){
+
+
+            ?>
+
+
+<p></p>
+         
+          
+
+            <button  id="order" orderid="<?php  echo $v['id'];   ?>" class="button order bg-red"> 发送邮件到我的邮箱 </button>
+
+           <a class="button  bg-red" href="/index/change/index/id/{$v.id}">更换IP</a>
+ 
+
+
+<?php    }   ?>
+           
+	
+	
+      	
+	</div>
+</div>    
+         <br>
+
+         {/foreach}
+	
+
+     
+      
+       
+         </div>
+
+
+
+
+    <div class="container">
+      
+<div class="line">
+  
+ <div class="panel">
+
+    <div class="panel-body">
+  
+
+
+ <h3> 教程</h3> 
+
+
+ 
+
+
+  
+
+
+windows ：  <a href="http://study.shenbi.me/windows.html">windows 教程</a> <p></p>
+
+安卓手机： <a href="http://study.shenbi.me/android.html"> 安卓手机教程</a> <p></p>
+
+苹果手机IOS: <a href="http://study.shenbi.me/iosmac.html">1、苹果手机Potatso教程 </a>    <a href="http://study.shenbi.me/connects.html"> 2、苹果手机 connectspro教程</a>    <p></p>
+苹果电脑MAC： <a href="http://study.shenbi.me/Macbook.html">MAC教程</a>   
+
+
+
+</div>
+
+</div>
+
+</div>
+
+
+
+    </div>
+
+
+
+
+
+
+<div class="container">
+  
+<div class="line">
+  
+
+<div class="x12">
+  <hr class="bg-mix" />
+
+   服务器列表
+<hr class="bg-dot" />
+
+</div>
+
+</div>
+
+
+
+<div class="line">
+  
+
+   {foreach $server as $K=>$v}
+
+
+        <div class="xl12 xm4 padding-small">
+          
+          <div class="panel bg-blue-light">
+  <div class="panel-body">
+    
+            <span class="badge bg-red float-right">{$v.local}</span>
+           <button class="button bg-sub">
+
+<?php     
+
+
+$reg1='/((?:\d+\.){3})\d+/';
+
+$reg2='~(\d+)\.(\d+)\.(\d+)\.(\d+)~';
+
+echo preg_replace($reg1,"\\1*",$v['ip']);
+
+
+//echo   preg_replace($reg2,"$1.$2.*.*",);  
+    ?>
+
+
+<span class="badge bg-red-light">
+    
+
+ <?php 
+
+
+                                                   $co=db('ssuser')->where('node',$v['ip'])->where('status',1)->where('addtime','>',strtotime('now'))->count();
+
+                                                   if($co<20){    
+
+                                                      echo '有货';
+
+
+                                                      }else{
+                                                        
+
+                                                        echo '缺货';
+                                                      }
+
+
+                                                   ?>
+
+
+
+
+
+
+
+  </span>
+</button>
+          
+          
+          </div>
+</div>
+          
+          
+          
+        </div>
+
+
+
+   {/foreach}
+
+
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+<script type="text/javascript">
+
+$('.order').on('click', function(){
+    
+ // var username=$('#username').val();
+  //var password=$('#password').val();
+
+
+var orderid=$(this).attr("orderid");
+//alert('dddd');
+
+    $.post("/index/mail/getinfo",{id:orderid},function(result){
+   
+       
+        
+       swal ( "操作结果" ,  result.msg  );         
+
+       
+        //alert(username+password);   
+        //
+        // 
+        },'json'); 
+        
+ 
+
+
+
+
+
+
+
+///
+
+
+
+  });
+
+
+
+
+</script>
+
+
+
+
+
+    
+</body>
+</html>
